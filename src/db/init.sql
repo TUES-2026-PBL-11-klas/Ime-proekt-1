@@ -1,9 +1,3 @@
--- ============================================================
--- Library Management System — Инициализация на базата данни
--- Таблици: users, books, loans
--- ============================================================
-
--- Потребители
 CREATE TABLE IF NOT EXISTS users (
     id          SERIAL PRIMARY KEY,
     username    VARCHAR(100) NOT NULL UNIQUE,
@@ -13,7 +7,6 @@ CREATE TABLE IF NOT EXISTS users (
     created_at  TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
--- Книги
 CREATE TABLE IF NOT EXISTS books (
     id              SERIAL PRIMARY KEY,
     title           VARCHAR(255) NOT NULL,
@@ -26,7 +19,6 @@ CREATE TABLE IF NOT EXISTS books (
     created_at      TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- Заеми (loans) — връзка между потребител и книга
 CREATE TABLE IF NOT EXISTS loans (
     id          SERIAL PRIMARY KEY,
     user_id     INTEGER   NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -37,12 +29,10 @@ CREATE TABLE IF NOT EXISTS loans (
     status      VARCHAR(20) NOT NULL DEFAULT 'active'  -- 'active' | 'returned' | 'overdue'
 );
 
--- Индекси за по-бързи заявки
 CREATE INDEX IF NOT EXISTS idx_books_author ON books (author);
 CREATE INDEX IF NOT EXISTS idx_books_genre  ON books (genre);
 CREATE INDEX IF NOT EXISTS idx_loans_status ON loans (status);
 
--- Администраторски акаунт по подразбиране (парола: admin123, bcrypt hash)
 INSERT INTO users (username, email, password, role)
 VALUES ('admin', 'admin@library.com',
         '$2b$10$XURQ4Y8s0Rk/OiIBl3MFnOcSZGbgC5aJz0FDRIqHbEiKfNwBmWGHa',

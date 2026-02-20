@@ -1,9 +1,6 @@
 const { Pool } = require('pg');
 
-/**
- * Database — клас за управление на връзката с PostgreSQL.
- * Използва connection pool за ефективно управление на връзките.
- */
+
 class Database {
   constructor() {
     this.pool = new Pool({

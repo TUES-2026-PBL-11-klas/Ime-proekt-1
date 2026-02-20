@@ -1,9 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-/**
- * authenticate — middleware за JWT автентикация.
- * Проверява наличието и валидността на Bearer токен.
- */
 function authenticate(req, res, next) {
   const header = req.headers.authorization;
   if (!header || !header.startsWith('Bearer ')) {
@@ -20,10 +16,6 @@ function authenticate(req, res, next) {
   }
 }
 
-/**
- * authorizeAdmin — middleware, което допуска само администратори.
- * Трябва да се използва след authenticate.
- */
 function authorizeAdmin(req, res, next) {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Нямате администраторски права.' });

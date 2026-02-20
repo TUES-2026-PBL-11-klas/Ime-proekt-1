@@ -1,12 +1,8 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-/**
- * UserController — обработва заявки, свързани с потребителите.
- * Регистрация, вход и списък (admin).
- */
+
 class UserController {
-  /** POST /api/users/register */
   static async register(req, res) {
     try {
       const { username, email, password } = req.body;
@@ -31,7 +27,6 @@ class UserController {
     }
   }
 
-  /** POST /api/users/login */
   static async login(req, res) {
     try {
       const { username, password } = req.body;
@@ -63,7 +58,6 @@ class UserController {
     }
   }
 
-  /** GET /api/users  (admin only) */
   static async getAll(req, res) {
     try {
       const users = await User.findAll();

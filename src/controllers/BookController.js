@@ -1,11 +1,7 @@
 const Book = require('../models/Book');
 
-/**
- * BookController — обработва CRUD заявки за книги.
- * Поддържа сортиране по автор и филтриране по жанр.
- */
+
 class BookController {
-  /** GET /api/books?sortBy=author&genre=... */
   static async getAll(req, res) {
     try {
       const { sortBy, genre } = req.query;
@@ -17,7 +13,6 @@ class BookController {
     }
   }
 
-  /** GET /api/books/:id */
   static async getById(req, res) {
     try {
       const book = await Book.findById(req.params.id);
@@ -29,7 +24,6 @@ class BookController {
     }
   }
 
-  /** POST /api/books  (admin) */
   static async create(req, res) {
     try {
       const { title, author, genre } = req.body;
@@ -44,7 +38,6 @@ class BookController {
     }
   }
 
-  /** PUT /api/books/:id  (admin) */
   static async update(req, res) {
     try {
       const book = await Book.update(req.params.id, req.body);
@@ -56,7 +49,6 @@ class BookController {
     }
   }
 
-  /** DELETE /api/books/:id  (admin) */
   static async delete(req, res) {
     try {
       const deleted = await Book.delete(req.params.id);

@@ -1,11 +1,8 @@
 const Loan = require('../models/Loan');
 const Book = require('../models/Book');
 
-/**
- * LoanController — управлява заемането и връщането на книги.
- */
+
 class LoanController {
-  /** POST /api/loans  — Заемане на книга */
   static async borrow(req, res) {
     try {
       const userId = req.user.id; // от JWT middleware
@@ -34,7 +31,6 @@ class LoanController {
     }
   }
 
-  /** PUT /api/loans/:id/return  — Връщане на книга */
   static async returnBook(req, res) {
     try {
       const loan = await Loan.findById(req.params.id);
@@ -44,7 +40,6 @@ class LoanController {
         return res.status(400).json({ error: 'Книгата вече е върната.' });
       }
 
-      // Потребителят може да връща само своите заеми (или admin)
       if (req.user.role !== 'admin' && loan.userId !== req.user.id) {
         return res.status(403).json({ error: 'Нямате права за тази операция.' });
       }
@@ -61,7 +56,6 @@ class LoanController {
     }
   }
 
-  /** GET /api/loans/my  — Заеми на текущия потребител */
   static async getMyLoans(req, res) {
     try {
       const loans = await Loan.findByUserId(req.user.id);
@@ -72,7 +66,6 @@ class LoanController {
     }
   }
 
-  /** GET /api/loans/active  (admin) — Всички активни заеми */
   static async getActive(req, res) {
     try {
       const loans = await Loan.findActive();
@@ -83,7 +76,6 @@ class LoanController {
     }
   }
 
-  /** GET /api/loans/overdue  (admin) — Просрочени заеми */
   static async getOverdue(req, res) {
     try {
       const loans = await Loan.findOverdue();
