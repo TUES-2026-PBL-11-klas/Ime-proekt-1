@@ -1,6 +1,6 @@
 "use client"
 
-import { registerUser } from "@/actions/user/register";
+import { registerUserClient } from "@/client/actions/user/registerClient";
 import { DEFAULT_ERROR_MESSAGE } from "@/domain/error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,7 +18,7 @@ export const useRegisterForm = () => {
 
         const formData = new FormData(e.currentTarget);
 
-        const result = await registerUser(formData);
+        const result = await registerUserClient(formData)
 
         if (result.success) {
             router.push("/login")
