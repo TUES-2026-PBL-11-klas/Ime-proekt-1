@@ -21,6 +21,23 @@ export interface Loan {
   status: "active" | "returned" | "overdue";
 }
 
+export interface MemberUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+  registeredDate: string;
+  status: "active" | "disabled";
+}
+
+export const mockMembers: MemberUser[] = [
+  { id: "1", name: "Admin User", email: "admin@library.com", role: "admin", registeredDate: "2025-01-01", status: "active" },
+  { id: "2", name: "John Student", email: "john@university.edu", role: "user", registeredDate: "2025-06-15", status: "active" },
+  { id: "3", name: "Sarah Reader", email: "sarah@university.edu", role: "user", registeredDate: "2025-08-20", status: "active" },
+  { id: "4", name: "Alice Walker", email: "alice@university.edu", role: "user", registeredDate: "2025-09-10", status: "active" },
+  { id: "5", name: "Bob Mitchell", email: "bob@university.edu", role: "user", registeredDate: "2025-11-01", status: "disabled" },
+];
+
 export const mockBooks: Book[] = [
   { id: "1", title: "Clean Code", author: "Robert C. Martin", genre: "Programming", isbn: "978-0132350884", description: "A handbook of agile software craftsmanship.", status: "available", coverColor: "hsl(221, 60%, 45%)" },
   { id: "2", title: "The Pragmatic Programmer", author: "David Thomas", genre: "Programming", isbn: "978-0135957059", description: "Your journey to mastery.", status: "borrowed", coverColor: "hsl(174, 63%, 45%)" },

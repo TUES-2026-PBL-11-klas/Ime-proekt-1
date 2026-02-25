@@ -167,6 +167,9 @@ function useToast() {
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
+    // Sync with current memory state on mount
+    setState(memoryState);
+    
     listeners.push(setState);
     return () => {
       const index = listeners.indexOf(setState);
@@ -174,7 +177,7 @@ function useToast() {
         listeners.splice(index, 1);
       }
     };
-  }, [state]);
+  }, []);
 
   return {
     ...state,

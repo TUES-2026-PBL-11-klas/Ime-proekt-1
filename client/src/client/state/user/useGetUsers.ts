@@ -1,13 +1,26 @@
 "use client"
 
-import { UserResponseType } from "@/schemas/user/getUsers";
-import { useState } from "react";
+import { getUsersClient } from "@/client/actions/user/getUsersClient";
+import { UserObjectType, UserResponseType } from "@/schemas/user/getUsers";
+import { useEffect, useState } from "react";
 
 export const useGetUsers = () => {
-    const [users, setUsers] = useState<UserResponseType[]>([]);
+    const [users, setUsers] = useState<UserResponseType>([]);
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("all");
-    const [selectedUser, setSelectedUser] = useState<UserResponseType | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserObjectType | null>(null);
+
+    useEffect(() => {
+        const handleGetUsers = async () => {
+            const result = await getUsersClient()
+
+            if(result.success && result.data) {
+                setUsers(result.data)
+            }
+        }
+
+        handleGetUsers()
+    }, [])
 
     const filtered = users.filter((u) => {
         const matchSearch =
