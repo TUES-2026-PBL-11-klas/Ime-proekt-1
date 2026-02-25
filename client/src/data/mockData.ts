@@ -21,15 +21,6 @@ export interface Loan {
   status: "active" | "returned" | "overdue";
 }
 
-export interface MemberUser {
-  id: string;
-  name: string;
-  email: string;
-  role: "admin" | "user";
-  registeredDate: string;
-  status: "active" | "disabled";
-}
-
 export const mockBooks: Book[] = [
   { id: "1", title: "Clean Code", author: "Robert C. Martin", genre: "Programming", isbn: "978-0132350884", description: "A handbook of agile software craftsmanship.", status: "available", coverColor: "hsl(221, 60%, 45%)" },
   { id: "2", title: "The Pragmatic Programmer", author: "David Thomas", genre: "Programming", isbn: "978-0135957059", description: "Your journey to mastery.", status: "borrowed", coverColor: "hsl(174, 63%, 45%)" },
@@ -47,14 +38,6 @@ export const mockLoans: Loan[] = [
   { id: "3", userId: "3", userName: "Sarah Reader", bookId: "8", bookTitle: "Computer Networks", borrowDate: "2026-02-05", dueDate: "2026-03-05", status: "active" },
   { id: "4", userId: "2", userName: "John Student", bookId: "1", bookTitle: "Clean Code", borrowDate: "2026-01-01", dueDate: "2026-01-15", returnDate: "2026-01-14", status: "returned" },
   { id: "5", userId: "4", userName: "Alice Walker", bookId: "3", bookTitle: "Design Patterns", borrowDate: "2026-01-20", dueDate: "2026-02-20", returnDate: "2026-02-18", status: "returned" },
-];
-
-export const mockMembers: MemberUser[] = [
-  { id: "1", name: "Admin User", email: "admin@library.com", role: "admin", registeredDate: "2025-01-01", status: "active" },
-  { id: "2", name: "John Student", email: "john@university.edu", role: "user", registeredDate: "2025-06-15", status: "active" },
-  { id: "3", name: "Sarah Reader", email: "sarah@university.edu", role: "user", registeredDate: "2025-08-20", status: "active" },
-  { id: "4", name: "Alice Walker", email: "alice@university.edu", role: "user", registeredDate: "2025-09-10", status: "active" },
-  { id: "5", name: "Bob Mitchell", email: "bob@university.edu", role: "user", registeredDate: "2025-11-01", status: "disabled" },
 ];
 
 export const genres = ["All", "Programming", "Computer Science", "AI & ML", "Databases", "Operating Systems", "Networking"];

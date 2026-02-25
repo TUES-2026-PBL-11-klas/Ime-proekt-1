@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { mockMembers, type MemberUser } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -31,12 +30,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Search } from "lucide-react";
+import { UserResponseType } from "@/schemas/user/getUsers";
 
 export default function AdminManageUsersPage() {
-  const [users, setUsers] = useState<MemberUser[]>(mockMembers);
+  const [users, setUsers] = useState<UserResponseType[]>([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-  const [selectedUser, setSelectedUser] = useState<MemberUser | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserResponseType | null>(null);
 
   const filtered = users.filter((u) => {
     const matchSearch =
