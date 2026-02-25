@@ -1,8 +1,9 @@
 import  Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, FileText, Users, Library, ArrowRight } from "lucide-react";
-import heroImage from "../public/hero-illustration.png";
+const heroImage = "/hero-illustration.png";
 
 const features = [
   { icon: BookOpen, title: "Book Management", description: "Catalog, organize, and track your entire library collection with ease." },
@@ -23,7 +24,7 @@ const Index = () => {
           <Button variant="ghost" asChild>
               <Link href='/login'>Login</Link>
           </Button>
-          <Button variant="hero" asChild>
+          <Button variant="default" asChild>
             <Link href='/register'>Register</Link>
           </Button>
         </div>
@@ -43,7 +44,7 @@ const Index = () => {
                 Manage books, track loans, and administer users — all in one place.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
-                <Button size="lg" variant="hero" asChild>
+                <Button size="lg" variant="default" asChild>
                   <Link href="/register">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
@@ -51,8 +52,14 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            <div className="animate-fade-in">
-              <img src={heroImage} alt="Library management dashboard preview" className="w-full rounded-xl shadow-2xl" />
+            <div className="relative w-full max-w-lg mx-auto lg:max-w-none animate-fade-in aspect-video lg:aspect-16/9">
+              <Image 
+                src={heroImage} 
+                fill 
+                alt="Library management dashboard preview" 
+                className="rounded-xl shadow-2xl object-contain" 
+                priority
+              />
             </div>
           </div>
         </div>

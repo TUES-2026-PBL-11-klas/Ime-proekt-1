@@ -35,7 +35,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard title="Total Users" value={totalUsers} icon={Users} variant="default" />
         <StatsCard title="Total Books" value={totalBooks} icon={BookOpen} variant="accent" />
         <StatsCard title="Active Loans" value={activeLoans} icon={FileText} variant="success" />
@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Charts row */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
                 {[40, 65, 45, 80, 55, 70, 60].map((h, i) => (
                   <div
                     key={i}
-                    className="w-8 rounded-t bg-primary/80 transition-all hover:bg-accent"
+                    className="w-5 rounded-t bg-primary/80 transition-all hover:bg-accent sm:w-8"
                     style={{ height: `${h * 1.8}px` }}
                   />
                 ))}
@@ -103,8 +103,8 @@ export default function AdminDashboardPage() {
         <CardHeader>
           <CardTitle className="text-lg">Recent Loans</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Table>
+        <CardContent className="overflow-x-auto">
+          <Table className="min-w-[500px]">
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
