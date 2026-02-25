@@ -65,8 +65,8 @@ export default function AdminManageLoansPage() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="flex flex-wrap gap-3 p-4">
-          <div className="relative min-w-[200px] flex-1">
+        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search by user or book..."
@@ -76,7 +76,7 @@ export default function AdminManageLoansPage() {
             />
           </div>
           <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-[160px]">
+            <SelectTrigger className="w-full sm:w-[160px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-card">
@@ -91,13 +91,13 @@ export default function AdminManageLoansPage() {
 
       {/* Loans table */}
       <Card>
-        <CardContent className="p-0">
-          <Table>
+        <CardContent className="overflow-x-auto p-0">
+          <Table className="min-w-[500px]">
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
                 <TableHead>Book</TableHead>
-                <TableHead>Borrow Date</TableHead>
+                <TableHead className="hidden md:table-cell">Borrow Date</TableHead>
                 <TableHead>Due Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
@@ -119,7 +119,7 @@ export default function AdminManageLoansPage() {
                     <TableCell className="font-medium">
                       {loan.bookTitle}
                     </TableCell>
-                    <TableCell>{loan.borrowDate}</TableCell>
+                    <TableCell className="hidden md:table-cell">{loan.borrowDate}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {loan.dueDate}

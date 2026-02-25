@@ -83,8 +83,8 @@ export default function AdminManageUsersPage() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="flex flex-wrap gap-3 p-4">
-          <div className="relative min-w-[200px] flex-1">
+        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search users..."
@@ -94,7 +94,7 @@ export default function AdminManageUsersPage() {
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-full sm:w-[140px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-card">
@@ -108,14 +108,14 @@ export default function AdminManageUsersPage() {
 
       {/* Users table */}
       <Card>
-        <CardContent className="p-0">
-          <Table>
+        <CardContent className="overflow-x-auto p-0">
+          <Table className="min-w-[600px]">
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead className="hidden md:table-cell">Email</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead>Registered</TableHead>
+                <TableHead className="hidden lg:table-cell">Registered</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -131,7 +131,7 @@ export default function AdminManageUsersPage() {
                       <span className="font-medium">{u.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell>{u.email}</TableCell>
+                  <TableCell className="hidden md:table-cell">{u.email}</TableCell>
                   <TableCell>
                     <Badge
                       variant={u.role === "admin" ? "default" : "secondary"}
@@ -139,7 +139,7 @@ export default function AdminManageUsersPage() {
                       {u.role}
                     </Badge>
                   </TableCell>
-                  <TableCell>{u.registeredDate}</TableCell>
+                  <TableCell className="hidden lg:table-cell">{u.registeredDate}</TableCell>
                   <TableCell>
                     <Badge
                       variant={
@@ -150,10 +150,11 @@ export default function AdminManageUsersPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
                       <Button
                         size="sm"
                         variant="outline"
+                        className="w-full sm:w-auto"
                         onClick={() => setSelectedUser(u)}
                       >
                         View
@@ -161,6 +162,7 @@ export default function AdminManageUsersPage() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="w-full sm:w-auto"
                         onClick={() => toggleRole(u.id)}
                       >
                         {u.role === "admin" ? (
@@ -172,6 +174,7 @@ export default function AdminManageUsersPage() {
                       </Button>
                       <Button
                         size="sm"
+                        className="w-full sm:w-auto"
                         variant={
                           u.status === "active" ? "destructive" : "default"
                         }
