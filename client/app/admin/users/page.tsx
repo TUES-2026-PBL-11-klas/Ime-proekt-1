@@ -30,7 +30,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Search, Shield, ShieldOff } from "lucide-react";
+import { Search } from "lucide-react";
 
 export default function AdminManageUsersPage() {
   const [users, setUsers] = useState<MemberUser[]>(mockMembers);
@@ -46,31 +46,7 @@ export default function AdminManageUsersPage() {
     return matchSearch && matchRole;
   });
 
-  const toggleRole = (userId: string) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === userId
-          ? { ...u, role: u.role === "admin" ? ("user" as const) : ("admin" as const) }
-          : u
-      )
-    );
-  };
 
-  const toggleStatus = (userId: string) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === userId
-          ? {
-              ...u,
-              status:
-                u.status === "active"
-                  ? ("disabled" as const)
-                  : ("active" as const),
-            }
-          : u
-      )
-    );
-  };
 
   return (
     <div className="space-y-6">
@@ -116,7 +92,6 @@ export default function AdminManageUsersPage() {
                 <TableHead className="hidden md:table-cell">Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead className="hidden lg:table-cell">Registered</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -141,48 +116,14 @@ export default function AdminManageUsersPage() {
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">{u.registeredDate}</TableCell>
                   <TableCell>
-                    <Badge
-                      variant={
-                        u.status === "active" ? "success" : "destructive"
-                      }
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      onClick={() => setSelectedUser(u)}
                     >
-                      {u.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full sm:w-auto"
-                        onClick={() => setSelectedUser(u)}
-                      >
-                        View
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full sm:w-auto"
-                        onClick={() => toggleRole(u.id)}
-                      >
-                        {u.role === "admin" ? (
-                          <ShieldOff className="mr-1 h-3 w-3" />
-                        ) : (
-                          <Shield className="mr-1 h-3 w-3" />
-                        )}
-                        {u.role === "admin" ? "Demote" : "Promote"}
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="w-full sm:w-auto"
-                        variant={
-                          u.status === "active" ? "destructive" : "default"
-                        }
-                        onClick={() => toggleStatus(u.id)}
-                      >
-                        {u.status === "active" ? "Disable" : "Enable"}
-                      </Button>
-                    </div>
+                      View
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -220,17 +161,6 @@ export default function AdminManageUsersPage() {
                   Registered
                 </Label>
                 <p>{selectedUser.registeredDate}</p>
-              </div>
-              <div className="grid gap-1">
-                <Label className="text-xs text-muted-foreground">Status</Label>
-                <Badge
-                  variant={
-                    selectedUser.status === "active" ? "success" : "destructive"
-                  }
-                  className="w-fit"
-                >
-                  {selectedUser.status}
-                </Badge>
               </div>
             </div>
           )}
