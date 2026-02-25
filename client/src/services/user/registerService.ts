@@ -9,6 +9,17 @@ export const registerUserService = async (data: RegisterRequestType): Promise<Se
         password: data.password
     }
 
-    // TODO call external layer
-    return registerApi(requestPayload)
+    const result = await registerApi(requestPayload);
+    
+    if (result.success) {
+        return {
+            success: true,
+            data: result.data,
+        };
+    }
+    
+    return {
+        success: false,
+        message: result.error,
+    };
 }
