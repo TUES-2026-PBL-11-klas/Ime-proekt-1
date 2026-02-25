@@ -5,6 +5,7 @@ import { ServerActionResponse } from "@/schemas/actions";
 import { LoginRequestSchema } from "@/schemas/user/login";
 import type { LoginRequestType, LoginResponseType } from "@/schemas/user/login";
 import { loginUserService } from "@/services/user/loginService";
+import { setAuthCookie } from "@/lib/cookies";
 
 export async function loginUser(formData: FormData | LoginRequestType): Promise<ServerActionResponse<LoginResponseType>> {
     try {
@@ -30,7 +31,13 @@ export async function loginUser(formData: FormData | LoginRequestType): Promise<
             };
         }
 
-        return loginUserService(validatedData.data)
+        const result = await loginUserService(validatedData.data);
+        
+        if (result.success && result.data) {
+            setAuthCookie(result.data.token);
+        }
+        
+        return result;
     } catch (error) {
         return {
             success: false,
