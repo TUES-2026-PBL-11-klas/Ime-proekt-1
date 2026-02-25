@@ -2,7 +2,8 @@ import  Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, FileText, Users, Library, ArrowRight } from "lucide-react";
-import heroImage from "../public/hero-illustration.png";
+const heroImage = "/hero-illustration.png";
+import Image from "next/image";
 
 const features = [
   { icon: BookOpen, title: "Book Management", description: "Catalog, organize, and track your entire library collection with ease." },
@@ -51,8 +52,14 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            <div className="animate-fade-in">
-              <img src={heroImage} alt="Library management dashboard preview" className="w-full rounded-xl shadow-2xl" />
+            <div className="relative w-full max-w-lg mx-auto lg:max-w-none animate-fade-in aspect-video lg:aspect-16/9">
+              <Image 
+                src={heroImage} 
+                fill 
+                alt="Library management dashboard preview" 
+                className="rounded-xl shadow-2xl object-contain" 
+                priority
+              />
             </div>
           </div>
         </div>
