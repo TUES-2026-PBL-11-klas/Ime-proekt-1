@@ -1,9 +1,9 @@
 import  Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, FileText, Users, Library, ArrowRight } from "lucide-react";
 const heroImage = "/hero-illustration.png";
-import Image from "next/image";
 
 const features = [
   { icon: BookOpen, title: "Book Management", description: "Catalog, organize, and track your entire library collection with ease." },
@@ -24,7 +24,7 @@ const Index = () => {
           <Button variant="ghost" asChild>
               <Link href='/login'>Login</Link>
           </Button>
-          <Button variant="hero" asChild>
+          <Button variant="default" asChild>
             <Link href='/register'>Register</Link>
           </Button>
         </div>
@@ -44,7 +44,7 @@ const Index = () => {
                 Manage books, track loans, and administer users — all in one place.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
-                <Button size="lg" variant="hero" asChild>
+                <Button size="lg" variant="default" asChild>
                   <Link href="/register">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>

@@ -71,8 +71,8 @@ export default function AdminManageBooksPage() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="flex flex-wrap gap-3 p-4">
-          <div className="relative min-w-[200px] flex-1">
+        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search books..."
@@ -82,7 +82,7 @@ export default function AdminManageBooksPage() {
             />
           </div>
           <Select value={genre} onValueChange={setGenre}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-card">
@@ -98,14 +98,14 @@ export default function AdminManageBooksPage() {
 
       {/* Table */}
       <Card>
-        <CardContent className="p-0">
-          <Table>
+        <CardContent className="overflow-x-auto p-0">
+          <Table className="min-w-[600px]">
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead>Author</TableHead>
                 <TableHead>Genre</TableHead>
-                <TableHead>ISBN</TableHead>
+                <TableHead className="hidden md:table-cell">ISBN</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -118,7 +118,7 @@ export default function AdminManageBooksPage() {
                   <TableCell>
                     <Badge variant="secondary">{book.genre}</Badge>
                   </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">
+                  <TableCell className="hidden text-xs text-muted-foreground md:table-cell">
                     {book.isbn}
                   </TableCell>
                   <TableCell>
@@ -131,15 +131,16 @@ export default function AdminManageBooksPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
                       <Link href={`/admin/books/${book.id}/edit`}>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" className="w-full sm:w-auto">
                           <Pencil className="mr-1 h-3 w-3" /> Edit
                         </Button>
                       </Link>
                       <Button
                         size="sm"
                         variant="destructive"
+                        className="w-full sm:w-auto"
                         onClick={() => setDeleteId(book.id)}
                       >
                         <Trash2 className="mr-1 h-3 w-3" /> Delete
