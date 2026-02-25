@@ -14,6 +14,6 @@ export const loginUserService = async (data: LoginRequestType): Promise<ServerAc
     
     return {
         success: false,
-        message: result.error,
+        message: result.message,
     };
 }

@@ -20,6 +20,6 @@ export const registerUserService = async (data: RegisterRequestType): Promise<Se
     
     return {
         success: false,
-        message: result.error,
+        message: result.message,
     };
 }

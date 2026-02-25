@@ -6,7 +6,7 @@ import z from "zod";
  */
 export type ApiResponse<T> =
   | { success: true; data: T; }
-  | { success: false; error: string; };
+  | { success: false; message: string; };
 
 
 export const ErrorResponseSchema = z.object({
