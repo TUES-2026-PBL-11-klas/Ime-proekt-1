@@ -33,12 +33,12 @@ export async function http<T>({
     ...options?.headers,
   };
 
-  // Add auth token if available (from localStorage or cookie)
+  // Prevent client side calls
   if (typeof window !== 'undefined') {
     console.log("Only make backend API calls server side.")
     return {
         success: false,
-        error: "Only make backend API calls server side."
+        message: "Only make backend API calls server side."
     }
   }
 
@@ -63,7 +63,7 @@ export async function http<T>({
       // If response is not JSON, treat as error
       return {
         success: false,
-        error: 'Invalid response format',
+        message: 'Invalid response format',
       };
     }
 
@@ -74,7 +74,7 @@ export async function http<T>({
             if(!parsedData.success) {
                 return {
                     success: false,
-                    error: "Invalid response format"
+                    message: "Invalid response format"
                 }
             }
         }
@@ -90,20 +90,20 @@ export async function http<T>({
     if(parsedError.success) {
         return {
             success: false,
-            error: parsedError.data.error
+            message: parsedError.data.error
         }
     }
 
     // Fallback for unexpected error format
     return {
       success: false,
-      error: 'An unexpected error occurred',
+      message: 'An unexpected error occurred',
     };
   } catch (error) {
     // Network errors or fetch failures
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Network error',
+      message: error instanceof Error ? error.message : 'Network error',
     };
   }
 }

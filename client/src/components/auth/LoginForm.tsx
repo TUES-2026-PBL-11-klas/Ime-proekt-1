@@ -4,31 +4,44 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLoginForm } from "@/client/state/user/useLoginForm";
 
 export default function LoginForm() {
+  const { handleSubmit, submitError, isSubmitting } = useLoginForm()
+
   return (
     <>
-      <form className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {submitError && (
+          <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+            {submitError}
+          </div>
+        )}
+
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Username</Label>
           <Input
-            id="email"
-            type="email"
-            placeholder="you@university.edu"
+            name="username"
+            id="username"
+            type="text"
+            placeholder="John Doe"
+            disabled={isSubmitting}
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input
+            name="password"
             id="password"
             type="password"
             placeholder="••••••••"
+            disabled={isSubmitting}
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          Sign In
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? "Signing In..." : "Sign In"}
         </Button>
       </form>
 
