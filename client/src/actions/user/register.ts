@@ -3,6 +3,7 @@
 import { ServerActionResponse } from "@/schemas/actions";
 import { RegisterRequestSchema } from "@/schemas/user/register";
 import type { RegisterRequestType, RegisterResponseType } from "@/schemas/user/register";
+import { registerUserService } from "@/services/user/registerService";
 
 export async function registerUser(formData: FormData | RegisterRequestType): Promise<ServerActionResponse<RegisterResponseType>> {
     try {
@@ -30,10 +31,7 @@ export async function registerUser(formData: FormData | RegisterRequestType): Pr
             };
         }
 
-        // TODO: Call service to register user
-        return {
-            success: true,
-        };
+        return registerUserService(validatedData.data)
     } catch (error) {
         return {
             success: false,
