@@ -1,3 +1,4 @@
+import { registerApi } from "@/external/user/registerApi";
 import { ServerActionResponse } from "@/schemas/actions";
 import { RegisterRequestType, RegisterResponseType } from "@/schemas/user/register";
 
@@ -9,7 +10,5 @@ export const registerUserService = async (data: RegisterRequestType): Promise<Se
     }
 
     // TODO call external layer
-    return {
-        success: true
-    }
+    return registerApi(requestPayload)
 }
