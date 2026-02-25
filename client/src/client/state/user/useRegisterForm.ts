@@ -21,7 +21,7 @@ export const useRegisterForm = () => {
         const result = await registerUser(formData);
 
         if (result.success) {
-            router.push("/books")
+            router.push("/login")
         } else {
             setSubmitError(result?.message ?? DEFAULT_ERROR_MESSAGE)
         }
