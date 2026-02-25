@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -30,21 +29,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Search } from "lucide-react";
-import { UserResponseType } from "@/schemas/user/getUsers";
+import { useGetUsers } from "@/client/state/user/useGetUsers";
 
 export default function AdminManageUsersPage() {
-  const [users, setUsers] = useState<UserResponseType[]>([]);
-  const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
-  const [selectedUser, setSelectedUser] = useState<UserResponseType | null>(null);
-
-  const filtered = users.filter((u) => {
-    const matchSearch =
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase());
-    const matchRole = roleFilter === "all" || u.role === roleFilter;
-    return matchSearch && matchRole;
-  });
+  const { 
+    filtered,
+    search, setSearch,
+    roleFilter, setRoleFilter,
+    selectedUser, setSelectedUser,
+  } = useGetUsers()
 
 
 
