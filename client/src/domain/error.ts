@@ -1,0 +1,1 @@
+export const DEFAULT_ERROR_MESSAGE = "An unexpected error occured. Please try again"
