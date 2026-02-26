@@ -1,12 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { mockBooks, genres } from "@/data/mockData";
+import { genres } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -16,38 +13,52 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import { useUpdateBookForm } from "@/client/state/book/useUpdateBookForm";
 
 export default function AdminEditBookPage() {
-  const router = useRouter();
-  const params = useParams();
-  const id = params.id as string;
-  const existing = mockBooks.find((b) => b.id === id);
+  const {
+    title,
+    setTitle,
+    author,
+    setAuthor,
+    genre,
+    setGenre,
+    isbn,
+    setIsbn,
+    initialTitle,
+    isLoading,
+    isSubmitting,
+    submitError,
+    bookNotFound,
+    handleSubmit,
+    handleCancel,
+  } = useUpdateBookForm();
 
-  const [title, setTitle] = useState(existing?.title || "");
-  const [author, setAuthor] = useState(existing?.author || "");
-  const [genre, setGenre] = useState(existing?.genre || "");
-  const [isbn, setIsbn] = useState(existing?.isbn || "");
-  const [description, setDescription] = useState(existing?.description || "");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title || !author || !genre) {
-      alert("Title, Author, and Genre are required.");
-      return;
-    }
-    // TODO: send to API
-    alert(`"${title}" has been updated successfully.`);
-    router.push("/admin/books");
-  };
-
-  if (!existing) {
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.push("/admin/books")}
+            onClick={handleCancel}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold text-foreground">Loading book...</h1>
+        </div>
+      </div>
+    );
+  }
+
+  if (bookNotFound) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleCancel}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -63,14 +74,14 @@ export default function AdminEditBookPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/admin/books")}
+          onClick={handleCancel}
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
           <h1 className="text-2xl font-bold text-foreground">Edit Book</h1>
           <p className="text-muted-foreground">
-            Editing &quot;{existing.title}&quot;
+            Editing &quot;{initialTitle}&quot;
           </p>
         </div>
       </div>
@@ -81,6 +92,11 @@ export default function AdminEditBookPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="grid gap-5">
+            {submitError && (
+              <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                {submitError}
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="title">Title *</Label>
               <Input
@@ -88,6 +104,7 @@ export default function AdminEditBookPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Book title"
+                disabled={isSubmitting}
               />
             </div>
             <div className="grid gap-2">
@@ -97,12 +114,13 @@ export default function AdminEditBookPage() {
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
                 placeholder="Author name"
+                disabled={isSubmitting}
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="genre">Genre *</Label>
               <Select value={genre} onValueChange={setGenre}>
-                <SelectTrigger>
+                <SelectTrigger disabled={isSubmitting}>
                   <SelectValue placeholder="Select genre" />
                 </SelectTrigger>
                 <SelectContent className="bg-card">
@@ -123,27 +141,21 @@ export default function AdminEditBookPage() {
                 value={isbn}
                 onChange={(e) => setIsbn(e.target.value)}
                 placeholder="ISBN number"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="desc">Description</Label>
-              <Textarea
-                id="desc"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Brief description"
-                rows={4}
+                disabled={isSubmitting}
               />
             </div>
             <div className="flex gap-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push("/admin/books")}
+                onClick={handleCancel}
+                disabled={isSubmitting}
               >
                 Cancel
               </Button>
-              <Button type="submit">Update Book</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Updating..." : "Update Book"}
+              </Button>
             </div>
           </form>
         </CardContent>

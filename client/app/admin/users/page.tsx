@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { mockMembers, type MemberUser } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -30,47 +28,18 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Search, Shield, ShieldOff } from "lucide-react";
+import { Search } from "lucide-react";
+import { useGetUsers } from "@/client/state/user/useGetUsers";
 
 export default function AdminManageUsersPage() {
-  const [users, setUsers] = useState<MemberUser[]>(mockMembers);
-  const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
-  const [selectedUser, setSelectedUser] = useState<MemberUser | null>(null);
+  const { 
+    filtered,
+    search, setSearch,
+    roleFilter, setRoleFilter,
+    selectedUser, setSelectedUser,
+  } = useGetUsers()
 
-  const filtered = users.filter((u) => {
-    const matchSearch =
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase());
-    const matchRole = roleFilter === "all" || u.role === roleFilter;
-    return matchSearch && matchRole;
-  });
 
-  const toggleRole = (userId: string) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === userId
-          ? { ...u, role: u.role === "admin" ? ("user" as const) : ("admin" as const) }
-          : u
-      )
-    );
-  };
-
-  const toggleStatus = (userId: string) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === userId
-          ? {
-              ...u,
-              status:
-                u.status === "active"
-                  ? ("disabled" as const)
-                  : ("active" as const),
-            }
-          : u
-      )
-    );
-  };
 
   return (
     <div className="space-y-6">
@@ -116,7 +85,6 @@ export default function AdminManageUsersPage() {
                 <TableHead className="hidden md:table-cell">Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead className="hidden lg:table-cell">Registered</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -126,9 +94,9 @@ export default function AdminManageUsersPage() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                        {u.name.charAt(0)}
+                        {u.username.charAt(0)}
                       </div>
-                      <span className="font-medium">{u.name}</span>
+                      <span className="font-medium">{u.username}</span>
                     </div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">{u.email}</TableCell>
@@ -139,50 +107,16 @@ export default function AdminManageUsersPage() {
                       {u.role}
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden lg:table-cell">{u.registeredDate}</TableCell>
+                  <TableCell className="hidden lg:table-cell">{u.created_at}</TableCell>
                   <TableCell>
-                    <Badge
-                      variant={
-                        u.status === "active" ? "success" : "destructive"
-                      }
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      onClick={() => setSelectedUser(u)}
                     >
-                      {u.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full sm:w-auto"
-                        onClick={() => setSelectedUser(u)}
-                      >
-                        View
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full sm:w-auto"
-                        onClick={() => toggleRole(u.id)}
-                      >
-                        {u.role === "admin" ? (
-                          <ShieldOff className="mr-1 h-3 w-3" />
-                        ) : (
-                          <Shield className="mr-1 h-3 w-3" />
-                        )}
-                        {u.role === "admin" ? "Demote" : "Promote"}
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="w-full sm:w-auto"
-                        variant={
-                          u.status === "active" ? "destructive" : "default"
-                        }
-                        onClick={() => toggleStatus(u.id)}
-                      >
-                        {u.status === "active" ? "Disable" : "Enable"}
-                      </Button>
-                    </div>
+                      View
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -201,8 +135,8 @@ export default function AdminManageUsersPage() {
           {selectedUser && (
             <div className="grid gap-3 py-2">
               <div className="grid gap-1">
-                <Label className="text-xs text-muted-foreground">Name</Label>
-                <p className="font-medium">{selectedUser.name}</p>
+                <Label className="text-xs text-muted-foreground">Username</Label>
+                <p className="font-medium">{selectedUser.username}</p>
               </div>
               <div className="grid gap-1">
                 <Label className="text-xs text-muted-foreground">Role</Label>
@@ -219,18 +153,7 @@ export default function AdminManageUsersPage() {
                 <Label className="text-xs text-muted-foreground">
                   Registered
                 </Label>
-                <p>{selectedUser.registeredDate}</p>
-              </div>
-              <div className="grid gap-1">
-                <Label className="text-xs text-muted-foreground">Status</Label>
-                <Badge
-                  variant={
-                    selectedUser.status === "active" ? "success" : "destructive"
-                  }
-                  className="w-fit"
-                >
-                  {selectedUser.status}
-                </Badge>
+                <p>{selectedUser.created_at}</p>
               </div>
             </div>
           )}
