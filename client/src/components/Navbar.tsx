@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Library, BookOpen, FileText, LogOut, Shield } from "lucide-react";
+import { Library, BookOpen, FileText, LogOut, Shield, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getUserInfo, type UserInfo } from "@/actions/auth/getUserInfo";
 import { logout } from "@/actions/auth/logout";
@@ -24,6 +24,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/books", label: "Catalog", icon: BookOpen },
     { href: "/my-loans", label: "My Loans", icon: FileText },
+    { href: "/profile", label: "Profile", icon: User },
   ];
 
   return (

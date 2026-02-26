@@ -23,7 +23,7 @@ function decodeJWTPayload(token: string): Record<string, unknown> | null {
 }
 
 // Routes that require authentication
-const protectedRoutes = ["/my-loans", "/admin"];
+const protectedRoutes = ["/my-loans", "/profile", "/admin"];
 // Routes only accessible when NOT logged in
 const authRoutes = ["/login", "/register"];
 
@@ -59,5 +59,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/my-loans/:path*", "/login", "/register"],
+  matcher: ["/admin/:path*", "/my-loans/:path*", "/profile/:path*", "/login", "/register"],
 };
