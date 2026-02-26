@@ -34,7 +34,7 @@ export async function loginUser(formData: FormData | LoginRequestType): Promise<
         const result = await loginUserService(validatedData.data);
         
         if (result.success && result.data) {
-            setAuthCookie(result.data.token);
+            await setAuthCookie(result.data.token);
         }
         
         return result;
