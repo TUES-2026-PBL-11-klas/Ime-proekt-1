@@ -1,6 +1,6 @@
 "use client";
 
-import { genres } from "@/data/genres";
+import { genres } from "@/dataadf/genres";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
