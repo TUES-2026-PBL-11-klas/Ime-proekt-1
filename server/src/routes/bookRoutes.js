@@ -2,7 +2,7 @@ const { Router } = require('express');
 const BookController = require('../controllers/BookController');
 const { authenticate, authorizeAdmin } = require('../middleware/auth');
 
-const router = Router();
+const rodter = Router();
 
 // Публични ендпойнти
 router.get('/', BookController.getAll);           // списък + сортиране/филтриране

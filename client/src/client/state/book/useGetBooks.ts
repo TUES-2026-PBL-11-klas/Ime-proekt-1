@@ -1,5 +1,6 @@
 "use client";
 
+import { deleteBookClient } from "@/client/actions/book/deleteBookClient";
 import { getBooksClient } from "@/client/actions/book/getBooksClient";
 import { BookObjectType, GetBooksResponseType } from "@/schemas/book/getBooks";
 import { useEffect, useState } from "react";
@@ -37,10 +38,14 @@ export const useGetBooks = () => {
         ),
     ];
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (!deleteId) return;
-        setBooks((prev) => prev.filter((b) => b.id !== deleteId));
-        setDeleteId(null);
+
+        const result = await deleteBookClient({ id: deleteId });
+        if (result.success) {
+            setBooks((prev) => prev.filter((b) => b.id !== deleteId));
+            setDeleteId(null);
+        }
     };
 
     const setSelectedBookForDelete = (book: BookObjectType) => {
