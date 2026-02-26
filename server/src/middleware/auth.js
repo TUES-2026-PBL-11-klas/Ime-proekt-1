@@ -9,7 +9,7 @@ function authenticate(req, res, next) {
   const token = header.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    req.user = decoded; // { id, role }
+    req.user = decoded; // { id, role, username }
     next();
   } catch {
     return res.status(401).json({ error: 'Невалиден или изтекъл токен.' });
