@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCreateBookForm } from "@/client/state/book/useCreateBookForm";
 import { genres } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -18,24 +16,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 
 export default function AdminAddBookPage() {
-  const router = useRouter();
-
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [genre, setGenre] = useState("");
-  const [isbn, setIsbn] = useState("");
-  const [description, setDescription] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title || !author || !genre) {
-      alert("Title, Author, and Genre are required.");
-      return;
-    }
-    // TODO: send to API
-    alert(`"${title}" has been added successfully.`);
-    router.push("/admin/books");
-  };
+  const {
+    title,
+    setTitle,
+    author,
+    setAuthor,
+    genre,
+    setGenre,
+    isbn,
+    setIsbn,
+    isSubmitting,
+    submitError,
+    handleSubmit,
+    handleCancel,
+  } = useCreateBookForm();
 
   return (
     <div className="space-y-6">
@@ -43,7 +37,7 @@ export default function AdminAddBookPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/admin/books")}
+          onClick={handleCancel}
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -59,6 +53,11 @@ export default function AdminAddBookPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="grid gap-5">
+            {submitError && (
+              <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                {submitError}
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="title">Title *</Label>
               <Input
@@ -66,6 +65,7 @@ export default function AdminAddBookPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Book title"
+                disabled={isSubmitting}
               />
             </div>
             <div className="grid gap-2">
@@ -75,12 +75,13 @@ export default function AdminAddBookPage() {
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
                 placeholder="Author name"
+                disabled={isSubmitting}
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="genre">Genre *</Label>
               <Select value={genre} onValueChange={setGenre}>
-                <SelectTrigger>
+                <SelectTrigger disabled={isSubmitting}>
                   <SelectValue placeholder="Select genre" />
                 </SelectTrigger>
                 <SelectContent className="bg-card">
@@ -101,27 +102,21 @@ export default function AdminAddBookPage() {
                 value={isbn}
                 onChange={(e) => setIsbn(e.target.value)}
                 placeholder="ISBN number"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="desc">Description</Label>
-              <Textarea
-                id="desc"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Brief description"
-                rows={4}
+                disabled={isSubmitting}
               />
             </div>
             <div className="flex gap-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push("/admin/books")}
+                onClick={handleCancel}
+                disabled={isSubmitting}
               >
                 Cancel
               </Button>
-              <Button type="submit">Add Book</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Adding..." : "Add Book"}
+              </Button>
             </div>
           </form>
         </CardContent>

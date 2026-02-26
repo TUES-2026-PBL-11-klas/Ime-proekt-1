@@ -6,7 +6,6 @@ import { mockBooks, genres } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -27,7 +26,6 @@ export default function AdminEditBookPage() {
   const [author, setAuthor] = useState(existing?.author || "");
   const [genre, setGenre] = useState(existing?.genre || "");
   const [isbn, setIsbn] = useState(existing?.isbn || "");
-  const [description, setDescription] = useState(existing?.description || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,16 +121,6 @@ export default function AdminEditBookPage() {
                 value={isbn}
                 onChange={(e) => setIsbn(e.target.value)}
                 placeholder="ISBN number"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="desc">Description</Label>
-              <Textarea
-                id="desc"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Brief description"
-                rows={4}
               />
             </div>
             <div className="flex gap-3 pt-2">

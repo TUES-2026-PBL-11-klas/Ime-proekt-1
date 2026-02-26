@@ -111,44 +111,45 @@ export default function AdminManageBooksPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((book) => (
-                <TableRow key={book.id}>
-                  <TableCell className="font-medium">{book.title}</TableCell>
-                  <TableCell>{book.author}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{book.genre}</Badge>
-                  </TableCell>
-                  <TableCell className="hidden text-xs text-muted-foreground md:table-cell">
-                    {book.isbn}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        book.status === "available" ? "success" : "secondary"
-                      }
-                    >
-                      {book.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
-                      <Link href={`/admin/books/${book.id}/edit`}>
-                        <Button size="sm" variant="outline" className="w-full sm:w-auto">
-                          <Pencil className="mr-1 h-3 w-3" /> Edit
-                        </Button>
-                      </Link>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        className="w-full sm:w-auto"
-                        onClick={() => setDeleteId(book.id)}
+              {filtered.map((book) => {
+                const isAvailable = book.available > 0;
+                return (
+                  <TableRow key={book.id}>
+                    <TableCell className="font-medium">{book.title}</TableCell>
+                    <TableCell>{book.author}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">{book.genre}</Badge>
+                    </TableCell>
+                    <TableCell className="hidden text-xs text-muted-foreground md:table-cell">
+                      {book.isbn}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={isAvailable ? "success" : "secondary"}
                       >
-                        <Trash2 className="mr-1 h-3 w-3" /> Delete
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        {isAvailable ? "available" : "unavailable"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
+                        <Link href={`/admin/books/${book.id}/edit`}>
+                          <Button size="sm" variant="outline" className="w-full sm:w-auto">
+                            <Pencil className="mr-1 h-3 w-3" /> Edit
+                          </Button>
+                        </Link>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="w-full sm:w-auto"
+                          onClick={() => setDeleteId(book.id)}
+                        >
+                          <Trash2 className="mr-1 h-3 w-3" /> Delete
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </CardContent>

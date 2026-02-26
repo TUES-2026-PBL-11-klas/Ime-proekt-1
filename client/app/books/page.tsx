@@ -32,7 +32,11 @@ const Books = () => {
     .sort((a, b) => sortOrder === "asc" ? a.author.localeCompare(b.author) : b.author.localeCompare(a.author));
 
   const handleBorrow = (id: string) => {
-    setBooks((prev) => prev.map((b) => b.id === id ? { ...b, status: "borrowed" as const } : b));
+    setBooks((prev) =>
+      prev.map((b) =>
+        b.id === id && b.available > 0 ? { ...b, available: b.available - 1 } : b
+      )
+    );
     toast({ title: "Success!", description: "Book borrowed successfully." });
   };
 
@@ -41,12 +45,14 @@ const Books = () => {
     toast({ title: "Deleted", description: "Book removed from catalog." });
   };
 
-  const handleSave = (data: { title: string; author: string; genre: string; isbn: string; description: string }) => {
+  const handleSave = (data: { title: string; author: string; genre: string; isbn: string }) => {
     const newBook: Book = {
       id: Date.now().toString(),
       ...data,
-      status: "available",
-      coverColor: `hsl(${Math.floor(Math.random() * 360)}, 50%, 45%)`,
+      publishedYear: null,
+      copies: 1,
+      available: 1,
+      createdAt: new Date().toISOString(),
     };
     setBooks((prev) => [...prev, newBook]);
     toast({ title: "Added!", description: `"${data.title}" added to catalog.` });
@@ -118,30 +124,33 @@ const Books = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((book) => (
-                  <TableRow key={book.id}>
-                    <TableCell className="font-medium">{book.title}</TableCell>
-                    <TableCell>{book.author}</TableCell>
-                    <TableCell><Badge variant="secondary">{book.genre}</Badge></TableCell>
-                    <TableCell>
-                      <Badge variant={book.status === "available" ? "success" : "secondary"}>
-                        {book.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {isAdmin ? (
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline">Edit</Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleDelete(book.id)}>Delete</Button>
-                        </div>
-                      ) : (
-                        <Button size="sm" variant="hero" disabled={book.status === "borrowed"} onClick={() => handleBorrow(book.id)}>
-                          {book.status === "available" ? "Borrow" : "Unavailable"}
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {filtered.map((book) => {
+                  const isAvailable = book.available > 0;
+                  return (
+                    <TableRow key={book.id}>
+                      <TableCell className="font-medium">{book.title}</TableCell>
+                      <TableCell>{book.author}</TableCell>
+                      <TableCell><Badge variant="secondary">{book.genre}</Badge></TableCell>
+                      <TableCell>
+                        <Badge variant={isAvailable ? "success" : "secondary"}>
+                          {isAvailable ? "available" : "unavailable"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {isAdmin ? (
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">Edit</Button>
+                            <Button size="sm" variant="destructive" onClick={() => handleDelete(book.id)}>Delete</Button>
+                          </div>
+                        ) : (
+                          <Button size="sm" variant="hero" disabled={!isAvailable} onClick={() => handleBorrow(book.id)}>
+                            {isAvailable ? "Borrow" : "Unavailable"}
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>

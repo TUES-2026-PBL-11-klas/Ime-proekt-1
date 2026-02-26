@@ -13,9 +13,11 @@ interface BookCardProps {
 }
 
 export function BookCard({ book, isAdmin, onBorrow, onEdit, onDelete }: BookCardProps) {
+  const isAvailable = book.available > 0;
+
   return (
     <Card className="card-hover animate-fade-in overflow-hidden">
-      <div className="flex h-40 items-center justify-center" style={{ backgroundColor: book.coverColor }}>
+      <div className="flex h-40 items-center justify-center bg-primary/80">
         <BookOpen className="h-16 w-16 text-white/80" />
       </div>
       <CardContent className="p-4">
@@ -23,8 +25,8 @@ export function BookCard({ book, isAdmin, onBorrow, onEdit, onDelete }: BookCard
         <p className="mt-1 text-sm text-muted-foreground">{book.author}</p>
         <div className="mt-2 flex items-center gap-2">
           <Badge variant="secondary" className="text-xs">{book.genre}</Badge>
-          <Badge variant={book.status === "available" ? "success" : "secondary"}>
-            {book.status === "available" ? "Available" : "Borrowed"}
+          <Badge variant={isAvailable ? "success" : "secondary"}>
+            {isAvailable ? "Available" : "Unavailable"}
           </Badge>
         </div>
         <div className="mt-3 flex gap-2">
@@ -34,8 +36,8 @@ export function BookCard({ book, isAdmin, onBorrow, onEdit, onDelete }: BookCard
               <Button size="sm" variant="destructive" className="flex-1" onClick={() => onDelete?.(book.id)}>Delete</Button>
             </>
           ) : (
-            <Button size="sm" variant="hero" className="w-full" disabled={book.status === "borrowed"} onClick={() => onBorrow?.(book.id)}>
-              {book.status === "available" ? "Borrow" : "Unavailable"}
+            <Button size="sm" variant="hero" className="w-full" disabled={!isAvailable} onClick={() => onBorrow?.(book.id)}>
+              {isAvailable ? "Borrow" : "Unavailable"}
             </Button>
           )}
         </div>

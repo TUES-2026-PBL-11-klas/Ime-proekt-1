@@ -4,9 +4,10 @@ export interface Book {
   author: string;
   genre: string;
   isbn: string;
-  description: string;
-  status: "available" | "borrowed";
-  coverColor: string;
+  publishedYear: number | null;
+  copies: number;
+  available: number;
+  createdAt: string;
 }
 
 export interface Loan {
@@ -39,14 +40,14 @@ export const mockMembers: MemberUser[] = [
 ];
 
 export const mockBooks: Book[] = [
-  { id: "1", title: "Clean Code", author: "Robert C. Martin", genre: "Programming", isbn: "978-0132350884", description: "A handbook of agile software craftsmanship.", status: "available", coverColor: "hsl(221, 60%, 45%)" },
-  { id: "2", title: "The Pragmatic Programmer", author: "David Thomas", genre: "Programming", isbn: "978-0135957059", description: "Your journey to mastery.", status: "borrowed", coverColor: "hsl(174, 63%, 45%)" },
-  { id: "3", title: "Design Patterns", author: "Gang of Four", genre: "Computer Science", isbn: "978-0201633610", description: "Elements of reusable object-oriented software.", status: "available", coverColor: "hsl(36, 100%, 65%)" },
-  { id: "4", title: "Introduction to Algorithms", author: "Thomas H. Cormen", genre: "Computer Science", isbn: "978-0262033848", description: "Comprehensive textbook on algorithms.", status: "available", coverColor: "hsl(1, 79%, 55%)" },
-  { id: "5", title: "Artificial Intelligence", author: "Stuart Russell", genre: "AI & ML", isbn: "978-0136042594", description: "A modern approach to AI.", status: "borrowed", coverColor: "hsl(123, 41%, 45%)" },
-  { id: "6", title: "Database Systems", author: "Ramez Elmasri", genre: "Databases", isbn: "978-0133970777", description: "Fundamentals of database systems.", status: "available", coverColor: "hsl(212, 30%, 17%)" },
-  { id: "7", title: "Operating System Concepts", author: "Abraham Silberschatz", genre: "Operating Systems", isbn: "978-1119800361", description: "Core concepts of operating systems.", status: "available", coverColor: "hsl(260, 50%, 50%)" },
-  { id: "8", title: "Computer Networks", author: "Andrew Tanenbaum", genre: "Networking", isbn: "978-0132126953", description: "Comprehensive networking textbook.", status: "borrowed", coverColor: "hsl(190, 60%, 40%)" },
+  { id: "1", title: "Clean Code", author: "Robert C. Martin", genre: "Programming", isbn: "978-0132350884", publishedYear: 2008, copies: 3, available: 3, createdAt: "2025-01-01T00:00:00.000Z" },
+  { id: "2", title: "The Pragmatic Programmer", author: "David Thomas", genre: "Programming", isbn: "978-0135957059", publishedYear: 2019, copies: 2, available: 0, createdAt: "2025-01-02T00:00:00.000Z" },
+  { id: "3", title: "Design Patterns", author: "Gang of Four", genre: "Computer Science", isbn: "978-0201633610", publishedYear: 1994, copies: 4, available: 4, createdAt: "2025-01-03T00:00:00.000Z" },
+  { id: "4", title: "Introduction to Algorithms", author: "Thomas H. Cormen", genre: "Computer Science", isbn: "978-0262033848", publishedYear: 2009, copies: 3, available: 3, createdAt: "2025-01-04T00:00:00.000Z" },
+  { id: "5", title: "Artificial Intelligence", author: "Stuart Russell", genre: "AI & ML", isbn: "978-0136042594", publishedYear: 2020, copies: 2, available: 0, createdAt: "2025-01-05T00:00:00.000Z" },
+  { id: "6", title: "Database Systems", author: "Ramez Elmasri", genre: "Databases", isbn: "978-0133970777", publishedYear: 2015, copies: 5, available: 5, createdAt: "2025-01-06T00:00:00.000Z" },
+  { id: "7", title: "Operating System Concepts", author: "Abraham Silberschatz", genre: "Operating Systems", isbn: "978-1119800361", publishedYear: 2021, copies: 3, available: 3, createdAt: "2025-01-07T00:00:00.000Z" },
+  { id: "8", title: "Computer Networks", author: "Andrew Tanenbaum", genre: "Networking", isbn: "978-0132126953", publishedYear: 2011, copies: 2, available: 0, createdAt: "2025-01-08T00:00:00.000Z" },
 ];
 
 export const mockLoans: Loan[] = [
