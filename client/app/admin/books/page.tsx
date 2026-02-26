@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { mockBooks, genres, type Book } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -31,26 +29,21 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { useGetBooks } from "@/client/state/book/useGetBooks";
 
 export default function AdminManageBooksPage() {
-  const [books, setBooks] = useState<Book[]>(mockBooks);
-  const [search, setSearch] = useState("");
-  const [genre, setGenre] = useState("All");
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  const filtered = books.filter((b) => {
-    const matchSearch =
-      b.title.toLowerCase().includes(search.toLowerCase()) ||
-      b.author.toLowerCase().includes(search.toLowerCase());
-    const matchGenre = genre === "All" || b.genre === genre;
-    return matchSearch && matchGenre;
-  });
-
-  const handleDelete = () => {
-    if (!deleteId) return;
-    setBooks((prev) => prev.filter((b) => b.id !== deleteId));
-    setDeleteId(null);
-  };
+  const {
+    filtered,
+    genreOptions,
+    search,
+    setSearch,
+    genre,
+    setGenre,
+    deleteId,
+    setDeleteId,
+    handleDelete,
+    setSelectedBookForDelete,
+  } = useGetBooks();
 
   return (
     <div className="space-y-6">
@@ -86,7 +79,7 @@ export default function AdminManageBooksPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-card">
-              {genres.map((g) => (
+              {genreOptions.map((g) => (
                 <SelectItem key={g} value={g}>
                   {g}
                 </SelectItem>
@@ -141,7 +134,7 @@ export default function AdminManageBooksPage() {
                           size="sm"
                           variant="destructive"
                           className="w-full sm:w-auto"
-                          onClick={() => setDeleteId(book.id)}
+                          onClick={() => setSelectedBookForDelete(book)}
                         >
                           <Trash2 className="mr-1 h-3 w-3" /> Delete
                         </Button>
