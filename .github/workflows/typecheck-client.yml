@@ -1,4 +1,4 @@
-name: Typecheck Client
+name: Typecheck and Build Client
 
 on:
   pull_request:
