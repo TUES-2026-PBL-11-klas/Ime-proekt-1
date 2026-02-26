@@ -1,0 +1,31 @@
+name: Typecheck Client
+
+on:
+  pull_request:
+    paths:
+      - "client/**"
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "pnpm"
+          cache-dependency-path: client/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm ci
+
+      - name: Run typecheck
+        run: pnpm typecheck
