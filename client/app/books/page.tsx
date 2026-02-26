@@ -13,7 +13,7 @@ import { Plus, Search, LayoutGrid, List } from "lucide-react";
 import { useToast } from "@/client/state/use-toast";
 
 const Books = () => {
-  const isAdmin = true;
+  const isAdmin: string = true;
   const { toast } = useToast();
   const [books, setBooks] = useState<Book[]>(mockBooks);
   const [search, setSearch] = useState("");
