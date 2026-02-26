@@ -1,11 +1,20 @@
+import { isUserAdmin } from '@/lib/authentication';
+import { isAdminRoute } from '@/lib/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
 
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const method = request.method;
   const startTime = Date.now();
+
+  // Check if user is trying to access admin route without admin privileges
+  if(isAdminRoute(pathname) && !(await isUserAdmin())) {
+    // Return 404 Not Found - rewrite to show not found page without changing URL
+    const notFoundUrl = new URL('/404', request.url);
+    return NextResponse.rewrite(notFoundUrl);
+  }
 
   // Create response
   const response = NextResponse.next();
