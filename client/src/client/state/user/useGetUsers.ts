@@ -24,7 +24,7 @@ export const useGetUsers = () => {
 
     const filtered = users.filter((u) => {
         const matchSearch =
-        u.name.toLowerCase().includes(search.toLowerCase()) ||
+        u.username.toLowerCase().includes(search.toLowerCase()) ||
         u.email.toLowerCase().includes(search.toLowerCase());
         const matchRole = roleFilter === "all" || u.role === roleFilter;
         return matchSearch && matchRole;

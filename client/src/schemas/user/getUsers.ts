@@ -1,11 +1,11 @@
 import z from "zod";
 
 export const UserObjectSchema = z.object({
-    id: z.string(),
-    name: z.string(),
+    id: z.number(),
+    username: z.string(),
     email: z.string(),
     role: z.enum(["admin", "user"]),
-    registeredDate: z.string()
+    created_at: z.string()
 })
 
 export type UserObjectType = z.infer<typeof UserObjectSchema>
