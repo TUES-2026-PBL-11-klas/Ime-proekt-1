@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 function authenticate(req, res, next) {
   const header = req.headers.authorization;
@@ -7,13 +8,30 @@ function authenticate(req, res, next) {
   }
 
   const token = header.split(' ')[1];
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    req.user = decoded; // { id, role }
-    next();
-  } catch {
-    return res.status(401).json({ error: 'Невалиден или изтекъл токен.' });
-  }
+  jwt.verify(token, process.env.JWT_SECRET || 'secret', async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Невалиден или изтекъл токен.' });
+    }
+
+    const userId = decoded && typeof decoded === 'object' ? decoded.id : undefined;
+    if (!userId) {
+      return res.status(401).json({ error: 'Невалиден токен.' });
+    }
+
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(401).json({ error: 'Невалиден токен.' });
+      }
+
+      // Attach the fresh user from DB to the request (not the JWT payload).
+      req.user = user.toJSON(); // { id, username, email, role, createdAt }
+      next();
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ error: 'Сървърна грешка.' });
+    }
+  });
 }
 
 function authorizeAdmin(req, res, next) {

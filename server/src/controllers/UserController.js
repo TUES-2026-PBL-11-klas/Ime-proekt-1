@@ -56,8 +56,12 @@ class UserController {
         return res.status(401).json({ error: 'Невалидни данни за вход.' });
       }
 
+      // Always include username in the JWT payload.
+      // (If for any reason the DB row mapping is missing `user.username`, fall back to the login input.)
+      const usernameForToken = user.username || username;
+
       const token = jwt.sign(
-        { id: user.id, role: user.role, username: user.username },
+        { id: user.id, role: user.role, username: usernameForToken },
         process.env.JWT_SECRET || 'secret',
         { expiresIn: '24h' },
       );
