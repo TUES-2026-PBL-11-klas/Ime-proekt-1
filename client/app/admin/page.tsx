@@ -16,7 +16,6 @@ import {
   Users,
   FileText,
   AlertTriangle,
-  BarChart3,
   Loader2,
 } from "lucide-react";
 import { useGetStats } from "@/client/state/stats/useGetStats";
@@ -45,62 +44,6 @@ export default function AdminDashboardPage() {
         <StatsCard title="Total Books" value={totalBooks} icon={BookOpen} variant="accent" />
         <StatsCard title="Active Loans" value={activeLoans} icon={FileText} variant="success" />
         <StatsCard title="Overdue Loans" value={overdueLoans} icon={AlertTriangle} variant="destructive" />
-      </div>
-
-      {/* Charts row */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <BarChart3 className="h-5 w-5 text-primary" /> Loans This Month
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex h-48 items-center justify-center rounded-lg bg-muted/50">
-              <div className="flex items-end gap-2">
-                {[40, 65, 45, 80, 55, 70, 60].map((h, i) => (
-                  <div
-                    key={i}
-                    className="w-5 rounded-t bg-primary/80 transition-all hover:bg-accent sm:w-8"
-                    style={{ height: `${h * 1.8}px` }}
-                  />
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <BookOpen className="h-5 w-5 text-accent" /> Popular Genres
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {[
-                { genre: "Programming", pct: 85 },
-                { genre: "Computer Science", pct: 60 },
-                { genre: "AI & ML", pct: 45 },
-                { genre: "Databases", pct: 30 },
-                { genre: "Networking", pct: 20 },
-              ].map((g) => (
-                <div key={g.genre}>
-                  <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-foreground">{g.genre}</span>
-                    <span className="text-muted-foreground">{g.pct}%</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-accent transition-all"
-                      style={{ width: `${g.pct}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Recent loans table */}
