@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { mockLoans, type Loan } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,34 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { AlertTriangle, Clock, Search } from "lucide-react";
+import { AlertTriangle, Clock, Search, Loader2 } from "lucide-react";
+import { useGetAdminLoans } from "@/client/state/loan/useGetAdminLoans";
 
 export default function AdminManageLoansPage() {
-  const [loans, setLoans] = useState<Loan[]>(mockLoans);
-  const [filter, setFilter] = useState("all");
-  const [search, setSearch] = useState("");
-
-  const displayLoans = loans
-    .filter((l) => filter === "all" || l.status === filter)
-    .filter(
-      (l) =>
-        l.userName.toLowerCase().includes(search.toLowerCase()) ||
-        l.bookTitle.toLowerCase().includes(search.toLowerCase())
-    );
-
-  const handleReturn = (id: string) => {
-    setLoans((prev) =>
-      prev.map((l) =>
-        l.id === id
-          ? {
-              ...l,
-              status: "returned" as const,
-              returnDate: new Date().toISOString().split("T")[0],
-            }
-          : l
-      )
-    );
-  };
+  const { loans, search, setSearch, filter, setFilter, handleReturn, loading } = useGetAdminLoans();
 
   const getDaysUntilDue = (dueDate: string) => {
     return Math.ceil(
@@ -56,11 +31,19 @@ export default function AdminManageLoansPage() {
     );
   };
 
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Manage Loans</h1>
-        <p className="text-muted-foreground">{displayLoans.length} loans</p>
+        <p className="text-muted-foreground">{loans.length} loans</p>
       </div>
 
       {/* Filters */}
@@ -83,7 +66,6 @@ export default function AdminManageLoansPage() {
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="active">Active</SelectItem>
               <SelectItem value="overdue">Overdue</SelectItem>
-              <SelectItem value="returned">Returned</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
@@ -104,53 +86,59 @@ export default function AdminManageLoansPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {displayLoans.map((loan) => {
-                const daysLeft = getDaysUntilDue(loan.dueDate);
-                return (
-                  <TableRow
-                    key={loan.id}
-                    className={
-                      loan.status === "overdue" ? "bg-destructive/5" : ""
-                    }
-                  >
-                    <TableCell className="font-medium">
-                      {loan.userName}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {loan.bookTitle}
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">{loan.borrowDate}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {loan.dueDate}
-                        {loan.status === "active" &&
-                          daysLeft <= 3 &&
-                          daysLeft > 0 && (
-                            <Badge variant="warning" className="text-xs">
-                              <Clock className="mr-1 h-3 w-3" />
-                              {daysLeft}d left
-                            </Badge>
+              {loans.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    No loans found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                loans.map((loan) => {
+                  const daysLeft = getDaysUntilDue(loan.due_date);
+                  return (
+                    <TableRow
+                      key={loan.id}
+                      className={
+                        loan.displayStatus === "overdue" ? "bg-destructive/5" : ""
+                      }
+                    >
+                      <TableCell className="font-medium">
+                        {loan.username ?? "Unknown"}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {loan.book_title ?? "Unknown"}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {new Date(loan.loan_date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {new Date(loan.due_date).toLocaleDateString()}
+                          {loan.displayStatus === "active" &&
+                            daysLeft <= 3 &&
+                            daysLeft > 0 && (
+                              <Badge variant="warning" className="text-xs">
+                                <Clock className="mr-1 h-3 w-3" />
+                                {daysLeft}d left
+                              </Badge>
+                            )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            loan.displayStatus === "active"
+                              ? "accent"
+                              : "destructive"
+                          }
+                        >
+                          {loan.displayStatus === "overdue" && (
+                            <AlertTriangle className="mr-1 h-3 w-3" />
                           )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          loan.status === "active"
-                            ? "accent"
-                            : loan.status === "overdue"
-                              ? "destructive"
-                              : "secondary"
-                        }
-                      >
-                        {loan.status === "overdue" && (
-                          <AlertTriangle className="mr-1 h-3 w-3" />
-                        )}
-                        {loan.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {loan.status !== "returned" ? (
+                          {loan.displayStatus}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
                         <Button
                           size="sm"
                           variant="outline"
@@ -158,15 +146,11 @@ export default function AdminManageLoansPage() {
                         >
                           Return
                         </Button>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">
-                          Returned {loan.returnDate}
-                        </span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </CardContent>

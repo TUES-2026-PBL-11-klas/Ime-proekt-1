@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AuthPageLayout from "@/components/auth/AuthPageLayout";
 import AuthCard from "@/components/auth/AuthCard";
 import LoginForm from "@/components/auth/LoginForm";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Sign In | LibraryMS",
@@ -15,7 +16,9 @@ export default function LoginPage() {
         title="Welcome Back"
         description="Sign in to your library account"
       >
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
       </AuthCard>
     </AuthPageLayout>
   );

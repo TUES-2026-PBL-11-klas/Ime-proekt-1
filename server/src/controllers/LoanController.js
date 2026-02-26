@@ -18,6 +18,12 @@ class LoanController {
         return res.status(400).json({ error: 'Няма налични копия на тази книга.' });
       }
 
+      // Check for existing active loan of the same book by the same user
+      const existingLoan = await Loan.findActiveByUserAndBook(userId, bookId);
+      if (existingLoan) {
+        return res.status(400).json({ error: 'Вече имате активен заем за тази книга.' });
+      }
+
       const success = await book.decrementAvailable();
       if (!success) {
         return res.status(400).json({ error: 'Няма налични копия на тази книга.' });

@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, Users, FileText, Library, Menu, X } from "lucide-react";
+import { LayoutDashboard, BookOpen, Users, FileText, Library, Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { getUserInfo, type UserInfo } from "@/actions/auth/getUserInfo";
+import { logout } from "@/actions/auth/logout";
 
 const adminLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -21,6 +23,11 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState<UserInfo>(null);
+
+  useEffect(() => {
+    getUserInfo().then(setUser);
+  }, []);
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -35,6 +42,9 @@ export default function AdminLayout({
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  const displayName = user?.username ?? (user?.role === "admin" ? "Admin" : "User");
+  const displayInitial = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="flex min-h-screen">
@@ -96,12 +106,25 @@ export default function AdminLayout({
         <div className="border-t border-sidebar-border p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-accent-foreground text-sm font-semibold">
-              A
+              {displayInitial}
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium">Admin</p>
-              <p className="truncate text-xs text-sidebar-foreground/70">Administrator</p>
+              <p className="truncate text-sm font-medium">{displayName}</p>
+              <p className="truncate text-xs text-sidebar-foreground/70">
+                {user?.role === "admin" ? "Administrator" : "User"}
+              </p>
             </div>
+            <form action={logout}>
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon"
+                className="text-sidebar-foreground/70 hover:text-destructive"
+                title="Logout"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </form>
           </div>
         </div>
       </aside>

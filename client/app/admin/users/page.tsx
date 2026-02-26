@@ -28,8 +28,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Search } from "lucide-react";
+import { Search, ShieldCheck, ShieldOff, Loader2 } from "lucide-react";
 import { useGetUsers } from "@/client/state/user/useGetUsers";
+import { updateUserRoleClient } from "@/client/actions/user/updateUserRoleClient";
+import { useState, useEffect } from "react";
+import { UserObjectType } from "@/schemas/user/getUsers";
+import { getUserInfo } from "@/actions/auth/getUserInfo";
 
 export default function AdminManageUsersPage() {
   const { 
@@ -37,9 +41,36 @@ export default function AdminManageUsersPage() {
     search, setSearch,
     roleFilter, setRoleFilter,
     selectedUser, setSelectedUser,
+    refreshUsers,
+    loading,
   } = useGetUsers()
 
+  const [updatingRole, setUpdatingRole] = useState<number | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
+  useEffect(() => {
+    getUserInfo().then((info) => {
+      if (info) setCurrentUserId(info.id);
+    });
+  }, []);
+
+  const handleRoleChange = async (user: UserObjectType) => {
+    const newRole = user.role === "admin" ? "user" : "admin";
+    setUpdatingRole(user.id);
+    const result = await updateUserRoleClient(user.id, newRole);
+    if (result.success) {
+      refreshUsers();
+    }
+    setUpdatingRole(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -107,16 +138,39 @@ export default function AdminManageUsersPage() {
                       {u.role}
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden lg:table-cell">{u.created_at}</TableCell>
+                  <TableCell className="hidden lg:table-cell">{new Date(u.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full sm:w-auto"
-                      onClick={() => setSelectedUser(u)}
-                    >
-                      View
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full sm:w-auto"
+                        onClick={() => setSelectedUser(u)}
+                      >
+                        View
+                      </Button>
+                      {u.id !== currentUserId && (
+                      <Button
+                        size="sm"
+                        variant={u.role === "admin" ? "secondary" : "default"}
+                        className="w-full sm:w-auto gap-1"
+                        disabled={updatingRole === u.id}
+                        onClick={() => handleRoleChange(u)}
+                      >
+                        {u.role === "admin" ? (
+                          <>
+                            <ShieldOff className="h-3 w-3" />
+                            <span className="hidden sm:inline">Demote</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShieldCheck className="h-3 w-3" />
+                            <span className="hidden sm:inline">Promote</span>
+                          </>
+                        )}
+                      </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -153,7 +207,7 @@ export default function AdminManageUsersPage() {
                 <Label className="text-xs text-muted-foreground">
                   Registered
                 </Label>
-                <p>{selectedUser.created_at}</p>
+                <p>{new Date(selectedUser.created_at).toLocaleDateString()}</p>
               </div>
             </div>
           )}

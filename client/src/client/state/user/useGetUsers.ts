@@ -2,25 +2,32 @@
 
 import { getUsersClient } from "@/client/actions/user/getUsersClient";
 import { UserObjectType, UserResponseType } from "@/schemas/user/getUsers";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useGetUsers = () => {
     const [users, setUsers] = useState<UserResponseType>([]);
+    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("all");
     const [selectedUser, setSelectedUser] = useState<UserObjectType | null>(null);
 
-    useEffect(() => {
-        const handleGetUsers = async () => {
-            const result = await getUsersClient()
+    const fetchUsers = useCallback(async () => {
+        setLoading(true);
+        const result = await getUsersClient()
 
-            if(result.success && result.data) {
-                setUsers(result.data)
-            }
+        if(result.success && result.data) {
+            setUsers(result.data)
         }
-
-        handleGetUsers()
+        setLoading(false);
     }, [])
+
+    useEffect(() => {
+        fetchUsers()
+    }, [fetchUsers])
+
+    const refreshUsers = () => {
+        fetchUsers()
+    }
 
     const filtered = users.filter((u) => {
         const matchSearch =
@@ -35,5 +42,7 @@ export const useGetUsers = () => {
         search, setSearch,
         roleFilter, setRoleFilter,
         selectedUser, setSelectedUser,
+        refreshUsers,
+        loading,
     }
 }

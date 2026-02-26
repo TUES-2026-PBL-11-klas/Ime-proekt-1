@@ -1,43 +1,63 @@
-import { isUserAdmin } from '@/lib/authentication';
-import { isAdminRoute } from '@/lib/navigation';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
+// Simple JWT payload decoder for Edge runtime
+function decodeJWTPayload(token: string): Record<string, unknown> | null {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
 
+    const payload = parts[1];
+    if (!payload) return null;
 
-export async function proxy(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
-  const method = request.method;
-  const startTime = Date.now();
-
-  // Check if user is trying to access admin route without admin privileges
-  if(isAdminRoute(pathname) && !(await isUserAdmin())) {
-    // Return 404 Not Found - rewrite to show not found page without changing URL
-    const notFoundUrl = new URL('/404', request.url);
-    return NextResponse.rewrite(notFoundUrl);
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64.padEnd(
+      base64.length + ((4 - (base64.length % 4)) % 4),
+      "="
+    );
+    const decoded = atob(padded);
+    return JSON.parse(decoded);
+  } catch {
+    return null;
   }
-
-  // Create response
-  const response = NextResponse.next();
-
-  // Log response time
-  const endTime = Date.now();
-  const duration = endTime - startTime;
-  console.log(`[${method}] ${pathname}${search} - ${duration}ms`);
-
-  return response;
 }
 
+// Routes that require authentication
+const protectedRoutes = ["/my-loans", "/admin"];
+// Routes only accessible when NOT logged in
+const authRoutes = ["/login", "/register"];
 
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const token = request.cookies.get("auth-token")?.value;
+
+  const payload = token ? decodeJWTPayload(token) : null;
+  const isAuthenticated = !!payload;
+  const isAdmin = payload?.role === "admin";
+
+  // Redirect authenticated users away from login/register
+  if (isAuthenticated && authRoutes.some((r) => pathname.startsWith(r))) {
+    return NextResponse.redirect(new URL("/books", request.url));
+  }
+
+  // Redirect unauthenticated users to login for protected routes
+  if (
+    !isAuthenticated &&
+    protectedRoutes.some((r) => pathname.startsWith(r))
+  ) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Redirect non-admin users away from admin routes
+  if (pathname.startsWith("/admin") && !isAdmin) {
+    return NextResponse.redirect(new URL("/books", request.url));
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (public folder)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ["/admin/:path*", "/my-loans/:path*", "/login", "/register"],
 };

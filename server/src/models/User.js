@@ -40,6 +40,14 @@ class User {
     return rows;
   }
 
+  static async updateRole(id, newRole) {
+    const { rows } = await db.query(
+      'UPDATE users SET role = $1 WHERE id = $2 RETURNING id, username, email, role, created_at',
+      [newRole, id],
+    );
+    return rows[0] || null;
+  }
+
   async comparePassword(plainPassword) {
     return bcrypt.compare(plainPassword, this.password);
   }

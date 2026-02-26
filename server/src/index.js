@@ -8,6 +8,7 @@ const db = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 const loanRoutes = require('./routes/loanRoutes');
+const statsRoutes = require('./routes/statsRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ app.get('/', (_req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/loans', loanRoutes);
+app.use('/api/stats', statsRoutes);
 
 /* ────────── Инициализация на БД и старт ────────── */
 async function initDatabase() {

@@ -13,4 +13,7 @@ router.post('/login', UserController.login);
 // Списък с всички потребители (само admin)
 router.get('/', authenticate, authorizeAdmin, UserController.getAll);
 
+// Промяна на ролята на потребител (само admin)
+router.put('/:id/role', authenticate, authorizeAdmin, UserController.updateRole);
+
 module.exports = router;

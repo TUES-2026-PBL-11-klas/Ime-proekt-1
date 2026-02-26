@@ -1,7 +1,7 @@
 "use client";
 
 import { useCreateBookForm } from "@/client/state/book/useCreateBookForm";
-import { genres } from "@/data/mockData";
+import { genres } from "@/data/genres";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

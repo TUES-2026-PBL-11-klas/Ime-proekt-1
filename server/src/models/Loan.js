@@ -27,6 +27,14 @@ class Loan {
     return rows[0] ? new Loan(rows[0]) : null;
   }
 
+  static async findActiveByUserAndBook(userId, bookId) {
+    const { rows } = await db.query(
+      `SELECT * FROM loans WHERE user_id = $1 AND book_id = $2 AND status = 'active'`,
+      [userId, bookId],
+    );
+    return rows[0] ? new Loan(rows[0]) : null;
+  }
+
   static async findActive() {
     const { rows } = await db.query(
       `SELECT l.*, u.username, b.title AS book_title, b.author AS book_author

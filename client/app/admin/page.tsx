@@ -17,15 +17,20 @@ import {
   FileText,
   AlertTriangle,
   BarChart3,
+  Loader2,
 } from "lucide-react";
-import { mockBooks, mockLoans, mockMembers } from "@/data/mockData";
+import { useGetStats } from "@/client/state/stats/useGetStats";
 
 export default function AdminDashboardPage() {
-  const totalBooks = mockBooks.length;
-  const activeLoans = mockLoans.filter((l) => l.status === "active").length;
-  const overdueLoans = mockLoans.filter((l) => l.status === "overdue").length;
-  const totalUsers = mockMembers.length;
-  const recentLoans = mockLoans.slice(0, 5);
+  const { totalUsers, totalBooks, activeLoans, overdueLoans, recentLoans, loading } = useGetStats();
+
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -115,30 +120,42 @@ export default function AdminDashboardPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentLoans.map((loan) => (
-                <TableRow
-                  key={loan.id}
-                  className={loan.status === "overdue" ? "bg-destructive/5" : ""}
-                >
-                  <TableCell className="font-medium">{loan.userName}</TableCell>
-                  <TableCell>{loan.bookTitle}</TableCell>
-                  <TableCell>{loan.borrowDate}</TableCell>
-                  <TableCell>{loan.dueDate}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        loan.status === "active"
-                          ? "accent"
-                          : loan.status === "overdue"
-                            ? "destructive"
-                            : "secondary"
-                      }
-                    >
-                      {loan.status}
-                    </Badge>
+              {recentLoans.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                    No loans yet
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                recentLoans.map((loan) => {
+                  const isOverdue = loan.status === "active" && new Date(loan.due_date) < new Date();
+                  const displayStatus = loan.status === "returned" ? "returned" : isOverdue ? "overdue" : "active";
+                  return (
+                    <TableRow
+                      key={loan.id}
+                      className={isOverdue ? "bg-destructive/5" : ""}
+                    >
+                      <TableCell className="font-medium">{loan.username}</TableCell>
+                      <TableCell>{loan.book_title}</TableCell>
+                      <TableCell>{new Date(loan.loan_date).toLocaleDateString()}</TableCell>
+                      <TableCell>{new Date(loan.due_date).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            displayStatus === "active"
+                              ? "accent"
+                              : displayStatus === "overdue"
+                                ? "destructive"
+                                : "secondary"
+                          }
+                        >
+                          {displayStatus}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </CardContent>
