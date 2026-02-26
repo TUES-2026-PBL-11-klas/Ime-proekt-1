@@ -12,7 +12,8 @@ type HttpFunctionConfig<T> = {
     method: HttpMethod,
     path: string,
     options?: HttpOptions,
-    schema?: z.ZodType<T>
+    schema?: z.ZodType<T>,
+    token?: string
 }
 
 /**
@@ -23,7 +24,8 @@ export async function http<T>({
   method,
   path,
   options,
-  schema
+  schema,
+  token
 }: HttpFunctionConfig<T>): Promise<ApiResponse<T>> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
   const url = `${baseUrl}${path}`;
@@ -32,6 +34,11 @@ export async function http<T>({
     'Content-Type': 'application/json',
     ...options?.headers,
   };
+
+  // Add Authorization header if token is provided
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
 
   // Prevent client side calls
   if (typeof window !== 'undefined') {
