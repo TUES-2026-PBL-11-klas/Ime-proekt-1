@@ -2,26 +2,26 @@
 
 import { getMyLoansClient } from "@/client/actions/loan/getMyLoansClient";
 import { LoanObjectType } from "@/schemas/loan/loans";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useGetMyLoans = () => {
     const [loans, setLoans] = useState<LoanObjectType[]>([]);
     const [filter, setFilter] = useState("all");
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchLoans = async () => {
-            setLoading(true);
-            const result = await getMyLoansClient();
+    const fetchLoans = useCallback(async () => {
+        setLoading(true);
+        const result = await getMyLoansClient();
 
-            if (result.success && result.data) {
-                setLoans(result.data);
-            }
-            setLoading(false);
-        };
-
-        fetchLoans();
+        if (result.success && result.data) {
+            setLoans(result.data);
+        }
+        setLoading(false);
     }, []);
+
+    useEffect(() => {
+        fetchLoans();
+    }, [fetchLoans]);
 
     const filtered = loans.filter((l) => {
         if (filter === "all") return true;
@@ -36,5 +36,6 @@ export const useGetMyLoans = () => {
         filter,
         setFilter,
         loading,
+        refreshLoans: fetchLoans,
     };
 };

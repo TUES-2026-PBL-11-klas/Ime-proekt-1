@@ -3,7 +3,7 @@
 import { deleteBookClient } from "@/client/actions/book/deleteBookClient";
 import { getBooksClient } from "@/client/actions/book/getBooksClient";
 import { BookObjectType, GetBooksResponseType } from "@/schemas/book/getBooks";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useGetBooks = () => {
     const [books, setBooks] = useState<GetBooksResponseType>([]);
@@ -11,17 +11,16 @@ export const useGetBooks = () => {
     const [genre, setGenre] = useState("All");
     const [deleteId, setDeleteId] = useState<number | null>(null);
 
-    useEffect(() => {
-        const handleGetBooks = async () => {
-            const result = await getBooksClient();
-
-            if (result.success && result.data) {
-                setBooks(result.data);
-            }
-        };
-
-        handleGetBooks();
+    const fetchBooks = useCallback(async () => {
+        const result = await getBooksClient();
+        if (result.success && result.data) {
+            setBooks(result.data);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchBooks();
+    }, [fetchBooks]);
 
     const filtered = books.filter((b) => {
         const matchSearch =
@@ -63,5 +62,6 @@ export const useGetBooks = () => {
         setDeleteId,
         handleDelete,
         setSelectedBookForDelete,
+        refreshBooks: fetchBooks,
     };
 };

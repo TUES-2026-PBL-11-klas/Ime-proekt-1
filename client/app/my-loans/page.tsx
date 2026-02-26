@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -17,13 +18,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlertTriangle, BookOpen, Loader2 } from "lucide-react";
+import { AlertTriangle, BookOpen, Loader2, RotateCcw } from "lucide-react";
 import { useGetMyLoans } from "@/client/state/loan/useGetMyLoans";
+import { returnLoanClient } from "@/client/actions/loan/returnLoanClient";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { useState } from "react";
 
 export default function MyLoansPage() {
-  const { loans, filter, setFilter, loading } = useGetMyLoans();
+  const { loans, filter, setFilter, loading, refreshLoans } = useGetMyLoans();
+  const [returningId, setReturningId] = useState<number | null>(null);
+
+  const handleReturn = async (loanId: number) => {
+    setReturningId(loanId);
+    const result = await returnLoanClient(loanId);
+    if (result.success) {
+      await refreshLoans();
+    }
+    setReturningId(null);
+  };
 
   if (loading) {
     return (
@@ -69,7 +82,7 @@ export default function MyLoansPage() {
           ) : (
             <Card>
               <CardContent className="overflow-x-auto p-0">
-                <Table className="min-w-[500px]">
+                <Table className="min-w-[600px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Book</TableHead>
@@ -77,6 +90,7 @@ export default function MyLoansPage() {
                       <TableHead className="hidden md:table-cell">Borrow Date</TableHead>
                       <TableHead>Due Date</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -88,6 +102,7 @@ export default function MyLoansPage() {
                         : isOverdue
                           ? "overdue"
                           : "active";
+                      const isReturning = returningId === loan.id;
 
                       return (
                         <TableRow
@@ -119,6 +134,26 @@ export default function MyLoansPage() {
                               )}
                               {displayStatus}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {loan.status === "active" ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                disabled={isReturning}
+                                onClick={() => handleReturn(loan.id)}
+                                className="gap-1.5"
+                              >
+                                {isReturning ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <RotateCcw className="h-3.5 w-3.5" />
+                                )}
+                                Return
+                              </Button>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">—</span>
+                            )}
                           </TableCell>
                         </TableRow>
                       );

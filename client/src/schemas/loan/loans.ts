@@ -1,5 +1,6 @@
 import z from "zod";
 
+// Schema for loan objects from raw SQL JOINs (snake_case fields)
 export const LoanObjectSchema = z.object({
     id: z.number().int().positive(),
     user_id: z.number().int().positive().optional(),
@@ -15,6 +16,19 @@ export const LoanObjectSchema = z.object({
 
 export type LoanObjectType = z.infer<typeof LoanObjectSchema>;
 
+// Schema for loan objects from Loan.toJSON() (camelCase fields)
+export const LoanCamelCaseSchema = z.object({
+    id: z.number().int().positive(),
+    userId: z.number().int().positive(),
+    bookId: z.number().int().positive(),
+    loanDate: z.string(),
+    dueDate: z.string(),
+    returnDate: z.string().nullable(),
+    status: z.enum(["active", "returned"]),
+});
+
+export type LoanCamelCaseType = z.infer<typeof LoanCamelCaseSchema>;
+
 export const GetActiveLoansResponseSchema = z.array(LoanObjectSchema);
 export type GetActiveLoansResponseType = z.infer<typeof GetActiveLoansResponseSchema>;
 
@@ -26,11 +40,11 @@ export type GetMyLoansResponseType = z.infer<typeof GetMyLoansResponseSchema>;
 
 export const ReturnLoanResponseSchema = z.object({
     message: z.string(),
-    loan: LoanObjectSchema,
+    loan: LoanCamelCaseSchema,
 });
 export type ReturnLoanResponseType = z.infer<typeof ReturnLoanResponseSchema>;
 
-export const BorrowBookResponseSchema = LoanObjectSchema;
+export const BorrowBookResponseSchema = LoanCamelCaseSchema;
 export type BorrowBookResponseType = z.infer<typeof BorrowBookResponseSchema>;
 
 export const BorrowBookRequestSchema = z.object({

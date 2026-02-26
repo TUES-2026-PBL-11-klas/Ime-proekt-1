@@ -14,7 +14,7 @@ import { BookObjectType } from "@/schemas/book/getBooks";
 import { Navbar } from "@/components/Navbar";
 
 const Books = () => {
-  const { filtered, genreOptions, search, setSearch, genre, setGenre } = useGetBooks();
+  const { filtered, genreOptions, search, setSearch, genre, setGenre, refreshBooks } = useGetBooks();
   const [view, setView] = useState<"grid" | "table">("grid");
   const [sortOrder, setSortOrder] = useState("asc");
 
@@ -23,7 +23,10 @@ const Books = () => {
   );
 
   const handleBorrow = async (book: BookObjectType) => {
-    await borrowBookClient(book.id);
+    const result = await borrowBookClient(book.id);
+    if (result.success) {
+      refreshBooks();
+    }
   };
 
   return (
