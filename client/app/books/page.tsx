@@ -37,7 +37,7 @@ const Books = () => {
         b.id === id && b.available > 0 ? { ...b, available: b.available - 1 } : b
       )
     );
-    toast({ title: "Success!", description: "Book borrowed successfully." });
+    toast({ title: "Success!", description: "Book borrowed successfully.", random: "Test" });
   };
 
   const handleDelete = (id: string) => {
