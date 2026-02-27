@@ -40,6 +40,7 @@ jobs:
           file: ./client/Dockerfile
           push: true
           tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/ime-proekt-client:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/ime-proekt-client:pr-${{ github.event.pull_request.number }}
             ${{ secrets.DOCKERHUB_USERNAME }}/ime-proekt-client:${{ steps.sanitize.outputs.branch }}-${{ steps.sanitize.outputs.sha }}
 
@@ -50,5 +51,6 @@ jobs:
           file: ./server/Dockerfile
           push: true
           tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/ime-proekt-server:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/ime-proekt-server:pr-${{ github.event.pull_request.number }}
             ${{ secrets.DOCKERHUB_USERNAME }}/ime-proekt-server:${{ steps.sanitize.outputs.branch }}-${{ steps.sanitize.outputs.sha }}
