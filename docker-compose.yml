@@ -27,6 +27,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: library_db
+      DB_SSL_REJECT_UNAUTHORIZED: false
       JWT_SECRET: change_me_in_production
     depends_on:
       - db
