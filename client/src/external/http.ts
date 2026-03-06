@@ -85,7 +85,7 @@ export async function http<T>({
   schema,
   token
 }: HttpFunctionConfig<T>): Promise<ApiResponse<T>> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+  const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
   const url = `${baseUrl}${path}`;
   const requestId = createRequestId();
   const startTime = Date.now();
